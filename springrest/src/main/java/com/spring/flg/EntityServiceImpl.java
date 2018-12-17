@@ -2,10 +2,16 @@ package com.spring.flg;
 
 import java.util.List;
 
+import org.apache.logging.log4j.message.Message;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,37 +47,36 @@ public class EntityServiceImpl{
 		return p;
 	}
 
-	/*
-	public Response updtPerson(Person pPrsn) {
+	
+    @PutMapping(path = "updateperson/{id}", 
+			consumes = {MediaType.APPLICATION_JSON_VALUE}, 
+			produces = {MediaType.APPLICATION_JSON_VALUE} )
+	public Person updatePerson(@PathVariable long id,@RequestBody Person pPrsn) {
 		
-		if(this.prsnList.get(pPrsn.getpID()) != null)
-		    this.prsnList.put(pPrsn.getpID(), pPrsn);
+		Person p = repository.findById(id).get();
 		
-		return Response.ok((Person)this.prsnList.get(pPrsn.getpID())).build();
-		
-		Person p = repository.save(pPrsn);
+		if(p != null) {
+		   p.getClone(pPrsn);
+		   p = repository.save(p);
+		}
         
-		return Response.ok(p).build();
+		return p;
 	}
 
-	public Response delPerson(long id) {
+	@DeleteMapping("delperson/{id}")
+	public ResponseEntity<?> deletePerson(@PathVariable long id) {
 		
-		Response resp;
-		if(this.prsnList.get(id) != null) {
-		    this.prsnList.remove(id);
-		    resp =  Response.ok("The person deleted successfully").build();
-		}else {
-			resp = Response.notModified().build();
-		}
 		
-		if(repository.findById(id).get() != null) {
-			repository.delete(repository.findById(id).get());
-			return Response.ok("The person deleted successfully").build();
-		}else {
-			return Response.notModified().build();
+        Person p = repository.findById(id).get();
+		
+		if(p != null) {
+		   repository.delete(p);
+		   return new ResponseEntity("Delete done!!", HttpStatus.OK);
 		}
-	
-	}*/
+		else {
+			return new ResponseEntity<String>("No such Person exist!!", HttpStatus.OK);
+		}
+	}
 
 	
 	

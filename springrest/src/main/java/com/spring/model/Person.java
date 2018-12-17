@@ -85,6 +85,14 @@ public class Person {
 		this.emailid = emailid;
 	}
 
-	
+	public void getClone(Person pPrsn) {
+		
+		this.brthdt = pPrsn.getBrthdt();
+		this.emailid = pPrsn.getEmailid();
+		this.fname = pPrsn.getFname();
+		this.lname = pPrsn.getLname();
+		this.phnm = pPrsn.getPhnm();
+		this.sexcd = pPrsn.getSexcd();
+	}
 
 }
